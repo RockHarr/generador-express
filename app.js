@@ -286,6 +286,26 @@ function runExtraTests(){
         });
       }
 
+      // Preset: Empanadas de pino
+const empBtn = document.getElementById('btnEmpanada');
+if (empBtn) {
+  empBtn.addEventListener('click', () => {
+    // setea controles
+    const tipo = document.getElementById('tipo');
+    const tema = document.getElementById('tema');
+    const tono = document.getElementById('tono');
+    const chileno = document.getElementById('chileno');
+
+    if (tipo) tipo.value = 'receta';
+    if (tema) tema.value = 'empanadas de pino';
+    if (tono) tono.value = 'neutro';
+    if (chileno && !chileno.checked) chileno.checked = true; // activa modo chilenísimo
+
+    if (typeof generar === 'function') generar();
+  });
+}
+
+
       // Listeners principales
       ['tipo','tono','largo','boost','chileno','sanitizar','tema']
         .forEach(id => document.getElementById(id)?.addEventListener('change', generar));
@@ -305,3 +325,4 @@ function runExtraTests(){
     }
   });
 })();
+
