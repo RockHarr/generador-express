@@ -1,5 +1,5 @@
 /* sw.js - Generador Express - offline cache */
-const CACHE_NAME = 'ge-v3-2025-10-26'; // 🔁 súbelo cuando hagas deploy nuevo
+const CACHE_NAME = 'ge-v3.1-2025-10-26'; // 🔁 súbelo cuando hagas deploy nuevo
 const APP_SHELL = [
   '/',
   '/index.html',
