@@ -1,12 +1,6 @@
 /* sw.js - Generador Express - offline cache */
-const CACHE_NAME = 'ge-v3.1-2025-10-26'; // 🔁 súbelo cuando hagas deploy nuevo
-const APP_SHELL = [
-  '/',
-  '/index.html',
-  '/app.js',            // 👈 importante: cachear tu JS externo
-  '/site.webmanifest',
-  '/assets/favicon.svg'
-];
+const CACHE_NAME = 'ge-v3.2-2025-10-26'; // 🔁 súbelo cuando hagas deploy nuevo
+const APP_SHELL = ['index.html', 'app.js', 'site.webmanifest', 'assets/favicon.svg'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)));
@@ -36,7 +30,7 @@ self.addEventListener('fetch', (e) => {
         const copy = res.clone();
         caches.open(CACHE_NAME).then(c => c.put(req, copy));
         return res;
-      }).catch(() => caches.match(req).then(r => r || caches.match('/index.html')))
+      }).catch(() => caches.match(req).then(r => r || caches.match('index.html')))
     );
   } else {
     e.respondWith(
