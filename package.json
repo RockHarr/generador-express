@@ -1,0 +1,17 @@
+{
+  "name": "generador-express",
+  "version": "0.1.0",
+  "description": "Herramientas de automatización y pruebas para Generador Express.",
+  "type": "module",
+  "scripts": {
+    "test": "npm run test:e2e",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:ui": "playwright test --ui"
+  },
+  "author": "Generador Express Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.43.1"
+  }
+}
