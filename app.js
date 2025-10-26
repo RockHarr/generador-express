@@ -1,3 +1,5 @@
+// ================== app.js — Generador Express ==================
+
 // Utilidades
 const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const cap  = (s)  => s.charAt(0).toUpperCase() + s.slice(1);
@@ -5,32 +7,21 @@ const cap  = (s)  => s.charAt(0).toUpperCase() + s.slice(1);
 const byLargo = (min, max) => {
   const val = Number(document.getElementById('largo')?.value ?? 3);
   return Math.round(min + (max - min) * ((val - 1) / 4));
-}; // 👈 cierre que faltaba
+}; // ← cierre correcto
 
-// Conecta el botón del header cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', () => {
-  const topBtn = document.getElementById('btnCopyTop');
-  if (!topBtn) return;
-
-  topBtn.addEventListener('click', copiar);
-  topBtn.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      copiar();
-    }
-  });
-});
-
-
+const mult = () => 1 + Number(document.getElementById('boost')?.value ?? 0); // 1x a 4x
+const vibe = (ms=30) => {
+  if (document.getElementById('haptica')?.checked && navigator.vibrate) {
+    navigator.vibrate(ms);
+  }
 };
-const mult = ()=> 1 + Number(document.getElementById('boost').value); // 1x a 4x
-const vibe = (ms=30)=>{ if(document.getElementById('haptica')?.checked && navigator.vibrate){ navigator.vibrate(ms); } };
 
 function withTono(text, tono){
   if(tono==='chistoso') return text + ' 😂';
-  if(tono==='formal') return text.replaceAll('jaja','');
+  if(tono==='formal')   return text.replaceAll('jaja','');
   return text;
 }
+
 function applyTema(text){
   const tema = document.getElementById('tema')?.value?.trim();
   if (tema) return text.replaceAll('[[TEMA]]', tema);
@@ -41,6 +32,7 @@ function applyTema(text){
     .replace(/\s*\(?\s*inspirada?\s+en\s*\[\[TEMA\]\]\)?/gi, '')    // (inspirada en [[TEMA]])
     .replaceAll('[[TEMA]]', '');                                    // token suelto
 }
+
 function sanitizar(text){
   // Modo prudente: neutraliza @ y enlaces
   if(!document.getElementById('sanitizar')?.checked) return text;
@@ -48,13 +40,14 @@ function sanitizar(text){
   ['@','http://','https://'].forEach(tok=>{ out = out.split(tok).join('(enlace omitido)'); });
   return out;
 }
+
 function chilenizar(text){
   if(!document.getElementById('chileno')?.checked) return text;
   const modismos = ['po','al tiro','cachai','bacán','la media volá','filete','piola','pulento'];
   return text + '\n\nPD: ' + rand(['Tranqui','Todo bien','Corta','Dato libre']) + ', ' + rand(modismos) + '.';
 }
 
-// Data (offline)
+// ------------------ Data (offline) ------------------
 const emojis = ['🍳','🥄','🍽️','🧂','🫙','🥣','🧈','🫑','🧅','🧄','🌶️','🥔','🥕','🍗','🥐','🍞','🫓','🫛'];
 const medidas = ['1 taza','2 tazas','1/2 taza','1 cucharada','2 cucharadas','1 cucharadita','200 g','300 g','500 g'];
 const ingredientes = ['harina','azúcar','sal','aceite','mantequilla','huevos','leche','polvo de hornear','vainilla','pimienta','ají de color','orégano','cebolla','tomate','pimentón','pollo','papa','zanahoria','choclo','porotos','arroz'];
@@ -99,7 +92,7 @@ const asciiPool = [
 
 const paragraphs = (n, makeLine)=> Array.from({length:n*mult()},(_,i)=> makeLine(i)).join('\n');
 
-// Generadores
+// ------------------ Generadores ------------------
 function genReceta(){
   const pasos = byLargo(3,8);
   const nombre = rand(platos);
@@ -107,9 +100,10 @@ function genReceta(){
   const pasosTxt = paragraphs(pasos, (i)=> `${i+1}. ${cap(rand(tecnicas))}.`);
   const lead = `${rand(emojis)} RECETA EXPRESS: ${cap(nombre)} ${rand(emojis)} (inspirada en [[TEMA]])`;
   const body = `Ingredientes:\n- ${lista.join('\n- ')}\n\nPreparación:\n${pasosTxt}`;
-  const end = `\n\n${rand(cierres)} ${rand(['#cocina','<3','— servicio público —'])}`;
+  const end  = `\n\n${rand(cierres)} ${rand(['#cocina','<3','— servicio público —'])}`;
   return `${lead}\n\n${body}${end}`;
 }
+
 function genRecetaAbsurd(){
   const pasos = byLargo(3,6);
   const nombre = `recetaza absurda de ${rand(['empanadas cuánticas','sopa existencial','tallarines invisibles','cazuela interdimensional'])}`;
@@ -117,14 +111,16 @@ function genRecetaAbsurd(){
   const pasosTxt = paragraphs(pasos, (i)=> `${i+1}. ${cap(rand(accionesAbsurdo))}.`);
   const lead = `🌀 RECETA ABSURDA: ${cap(nombre)} (tema: [[TEMA]])`;
   const body = `Ingredientes no-confirmados:\n- ${lista.join('\n- ')}\n\nProcedimiento a ojo:\n${pasosTxt}`;
-  const end = `\n\nResultado: comestible en universos paralelos. Sugerencia: acompañar con agua imaginaria.`;
+  const end  = `\n\nResultado: comestible en universos paralelos. Sugerencia: acompañar con agua imaginaria.`;
   return `${lead}\n\n${body}${end}`;
 }
+
 function genDato(){
   const base = rand(datos);
   const extra = ['Dato 100% real (no fake).','Apréndase esta para el asado.','Úselo responsablemente en reuniones aburridas.'];
   return `${rand(['ℹ️','💡','🧠'])} ${base} ${rand(extra)} (tema: [[TEMA]])`;
 }
+
 function genReview(){
   const estrellas = '★★★★★☆☆☆☆☆'.slice(0, byLargo(2,5));
   const bloques = [
@@ -136,32 +132,39 @@ function genReview(){
   ];
   return paragraphs(1,()=> bloques.join('\n'));
 }
+
 function genAscii(){ return rand(asciiPool) + `\n\n[[TEMA]]`; }
+
 function genCopypasta(){
   const t = rand(copypastas);
   const cola = rand(['#PazEnLosComentarios','#HidrataciónObligatoria','— Fin —']);
   return `${t} ${cola} (tema: [[TEMA]])`;
 }
 
+// ------------------ Flujo principal ------------------
 function generar(){
-  const tipo = document.getElementById('tipo').value;
-  const tono = document.getElementById('tono').value;
+  const tipo = document.getElementById('tipo')?.value ?? 'receta';
+  const tono = document.getElementById('tono')?.value ?? 'neutro';
+
   let out = '';
-  if(tipo==='receta') out = genReceta();
-  if(tipo==='receta_absurda') out = genRecetaAbsurd();
-  if(tipo==='dato') out = genDato();
-  if(tipo==='review') out = genReview();
-  if(tipo==='ascii') out = genAscii();
-  if(tipo==='copypasta') out = genCopypasta();
+  if(tipo==='receta')          out = genReceta();
+  if(tipo==='receta_absurda')  out = genRecetaAbsurd();
+  if(tipo==='dato')            out = genDato();
+  if(tipo==='review')          out = genReview();
+  if(tipo==='ascii')           out = genAscii();
+  if(tipo==='copypasta')       out = genCopypasta();
 
   out = applyTema(out);
   out = sanitizar(out);
   out = withTono(out, tono);
   out = chilenizar(out);
 
-  document.getElementById('salida').value = out;
+  const ta = document.getElementById('salida');
+  if (ta) ta.value = out;
+
   actualizarContador();
-  document.getElementById('previewInfo').textContent = `Generado: ${new Date().toLocaleTimeString()} | x${mult()} de extensión`;
+  const info = document.getElementById('previewInfo');
+  if (info) info.textContent = `Generado: ${new Date().toLocaleTimeString()} | x${mult()} de extensión`;
 
   if(document.getElementById('autocopiar')?.checked){ copiar(); }
   vibe();
@@ -169,35 +172,46 @@ function generar(){
 
 function copiar(){
   const ta = document.getElementById('salida');
+  if(!ta) return;
   ta.select(); ta.setSelectionRange(0, 99999);
   const ok = document.execCommand?.('copy');
-  if(ok){ const b = document.getElementById('btnCopiar'); if(b){ b.textContent='¡Copiado!'; setTimeout(()=> b.textContent='Copiar texto', 1200); } }
+  if(ok){
+    const b = document.getElementById('btnCopiar');
+    if(b){ b.textContent='¡Copiado!'; setTimeout(()=> b.textContent='Copiar texto', 1200); }
+  }
   toast('Texto copiado');
   vibe();
 }
 
 function actualizarContador(){
-  const n = document.getElementById('salida').value.length;
-  document.getElementById('contador').textContent = `${n} caracteres`;
+  const n = document.getElementById('salida')?.value.length ?? 0;
+  const c = document.getElementById('contador');
+  if (c) c.textContent = `${n} caracteres`;
 }
 
 // PNG: copiar/guardar imagen del texto
 function copyOrSavePNG(){
-  const text = document.getElementById('salida').value || 'Nada por aquí…';
+  const text = document.getElementById('salida')?.value || 'Nada por aquí…';
   const padding = 28, lineHeight = 38, maxWidth = 1080;
   const c = document.createElement('canvas'); const ctx = c.getContext('2d');
   const font = '28px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
   ctx.font = font;
   const words = text.split(/\s+/), lines = []; let line='';
   const target = Math.min(maxWidth, Math.max(640, Math.min(window.innerWidth*2, 1080)));
-  words.forEach(w=>{ const test = line ? line+' '+w : w; if(ctx.measureText(test).width > (target - padding*2)){ lines.push(line); line = w; } else { line = test; } });
+  words.forEach(w=>{
+    const test = line ? line+' '+w : w;
+    if(ctx.measureText(test).width > (target - padding*2)){ lines.push(line); line = w; }
+    else { line = test; }
+  });
   if(line) lines.push(line);
+
   const width = target, height = padding*2 + lines.length*lineHeight;
   c.width = width; c.height = height;
   const ctx2 = c.getContext('2d');
   ctx2.fillStyle = '#0b1220'; ctx2.fillRect(0,0,width,height);
   ctx2.fillStyle = '#e8eefc'; ctx2.font = font; ctx2.textBaseline = 'top';
   lines.forEach((ln,i)=> ctx2.fillText(ln, padding, padding + i*lineHeight));
+
   c.toBlob(async (blob)=>{
     try{
       if(navigator.clipboard && window.ClipboardItem){
@@ -216,11 +230,16 @@ function copyOrSavePNG(){
 function toast(msg){
   let n = document.getElementById('toast');
   if(!n){ n = Object.assign(document.createElement('div'), { id:'toast' }); document.body.appendChild(n); }
-  Object.assign(n.style, { position:'fixed', left:'50%', bottom:'20px', transform:'translateX(-50%)', padding:'10px 14px', background:'#121a2b', color:'#e8eefc', border:'1px solid rgba(255,255,255,.15)', borderRadius:'12px', zIndex:9999, opacity:'0.95'});
+  Object.assign(n.style, {
+    position:'fixed', left:'50%', bottom:'20px', transform:'translateX(-50%)',
+    padding:'10px 14px', background:'#121a2b', color:'#e8eefc',
+    border:'1px solid rgba(255,255,255,.15)', borderRadius:'12px',
+    zIndex:9999, opacity:'0.95'
+  });
   n.textContent = msg; setTimeout(()=> n.remove(), 1400);
 }
 
-// Tests básicos existentes (no modificar)
+// ------------------ Tests ------------------
 function runTests(){
   const log = [];
   const ok = (m)=> log.push('✅ '+m);
@@ -238,34 +257,51 @@ function runTests(){
   document.getElementById('testStatus').textContent = log.every(l=> l.startsWith('✅')) ? 'OK' : 'Fallas';
 }
 
-// Tests extra
 function runExtraTests(){
   const log = [];
   const ok = (m)=> log.push('🟢 '+m);
   const fail = (m)=> log.push('🔴 '+m);
   try{ if(typeof copyOrSavePNG === 'function') ok('copyOrSavePNG() existe'); else fail('copyOrSavePNG no existe'); }catch(e){ fail('copyOrSavePNG error: '+e.message); }
-  try{ document.getElementById('autocopiar').checked = true; generar(); const txt = document.getElementById('salida').value; if(txt && txt.length>0) ok('autocopiar no rompe el flujo'); else fail('autocopiar generó vacío'); document.getElementById('autocopiar').checked = false; }catch(e){ fail('autocopiar error: '+e.message); }
+  try{
+    const ac = document.getElementById('autocopiar'); if(ac) ac.checked = true;
+    generar(); const txt = document.getElementById('salida')?.value;
+    if(txt && txt.length>0) ok('autocopiar no rompe el flujo'); else fail('autocopiar generó vacío');
+    if(ac) ac.checked = false;
+  }catch(e){ fail('autocopiar error: '+e.message); }
   document.getElementById('testLog').textContent += '\n' + log.join('\n');
 }
 
-// Wire-up
-['tipo','tono','largo','boost','chileno','sanitizar','tema'].forEach(id=> document.getElementById(id)?.addEventListener('change', generar));
-['btnGenerar','btnOtra'].forEach(id=> document.getElementById(id)?.addEventListener('click', generar));
-document.getElementById('btnCopiar')?.addEventListener('click', copiar);
-document.getElementById('btnPng')?.addEventListener('click', copyOrSavePNG);
-document.getElementById('salida')?.addEventListener('input', actualizarContador);
-document.getElementById('btnTests')?.addEventListener('click', ()=>{ runTests(); runExtraTests(); });
+// ================== BOOTSTRAP SEGURO ==================
+(function bootstrap() {
+  console.log('[GE] app.js cargado');
 
-// Action bar
-['abGen','abCopy','abPng'].forEach((id,i)=>{
-  const el = document.getElementById(id);
-  if(!el) return;
-  if(i===0) el.addEventListener('click', generar);
-  if(i===1) el.addEventListener('click', copiar);
-  if(i===2) el.addEventListener('click', copyOrSavePNG);
-});
+  document.addEventListener('DOMContentLoaded', () => {
+    try {
+      // Botón del header (id="btnCopyTop")
+      const topBtn = document.getElementById('btnCopyTop');
+      if (topBtn) {
+        topBtn.addEventListener('click', copiar);
+        topBtn.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copiar(); }
+        });
+      }
 
-// Primer render
-window.addEventListener('DOMContentLoaded', ()=>{ generar(); });
+      // Listeners principales
+      ['tipo','tono','largo','boost','chileno','sanitizar','tema']
+        .forEach(id => document.getElementById(id)?.addEventListener('change', generar));
+      ['btnGenerar','btnOtra']
+        .forEach(id => document.getElementById(id)?.addEventListener('click', generar));
+      document.getElementById('btnCopiar')?.addEventListener('click', copiar);
+      document.getElementById('btnPng')?.addEventListener('click', copyOrSavePNG);
+      document.getElementById('salida')?.addEventListener('input', actualizarContador);
+      document.getElementById('btnTests')?.addEventListener('click', () => { runTests(); runExtraTests(); });
 
-
+      // Primer render
+      generar();
+      console.log('[GE] UI lista y texto generado');
+    } catch (err) {
+      console.error('[GE] Error al inicializar:', err);
+      alert('Error iniciando la app: ' + err.message);
+    }
+  });
+})();
