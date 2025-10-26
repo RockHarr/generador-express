@@ -2,6 +2,15 @@
 
 Colección de automatizaciones y pruebas para el proyecto Generador Express.
 
+## Tests
+
+```bash
+npm i
+npx playwright install --with-deps
+npm run pretest:e2e
+npm run test:e2e
+```
+
 ## Pruebas end-to-end
 
 Este repositorio incluye una suite mínima de smoke tests construida con [Playwright](https://playwright.dev/).
