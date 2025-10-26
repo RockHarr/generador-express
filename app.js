@@ -15,8 +15,13 @@ function withTono(text, tono){
 }
 function applyTema(text){
   const tema = document.getElementById('tema')?.value?.trim();
-  if(!tema) return text;
-  return text.replaceAll('[[TEMA]]', tema);
+  if (tema) return text.replaceAll('[[TEMA]]', tema);
+
+  // Sin tema: elimina parentéticos y tokens sueltos
+  return text
+    .replace(/\s*\(?\s*tema:\s*\[\[TEMA\]\]\)?/gi, '')              // (tema: [[TEMA]])
+    .replace(/\s*\(?\s*inspirada?\s+en\s*\[\[TEMA\]\]\)?/gi, '')    // (inspirada en [[TEMA]])
+    .replaceAll('[[TEMA]]', '');                                    // token suelto
 }
 function sanitizar(text){
   // Modo prudente: neutraliza @ y enlaces
@@ -244,3 +249,4 @@ document.getElementById('btnTests')?.addEventListener('click', ()=>{ runTests();
 
 // Primer render
 window.addEventListener('DOMContentLoaded', ()=>{ generar(); });
+
