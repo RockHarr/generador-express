@@ -1,9 +1,27 @@
 // Utilidades
-const rand = (arr)=> arr[Math.floor(Math.random()*arr.length)];
-const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
-const byLargo = (min,max)=> {
-  const val = Number(document.getElementById('largo').value);
-  return Math.round(min + (max-min) * ((val-1)/4));
+const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const cap  = (s)  => s.charAt(0).toUpperCase() + s.slice(1);
+
+const byLargo = (min, max) => {
+  const val = Number(document.getElementById('largo')?.value ?? 3);
+  return Math.round(min + (max - min) * ((val - 1) / 4));
+}; // 👈 cierre que faltaba
+
+// Conecta el botón del header cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+  const topBtn = document.getElementById('btnCopyTop');
+  if (!topBtn) return;
+
+  topBtn.addEventListener('click', copiar);
+  topBtn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      copiar();
+    }
+  });
+});
+
+
 };
 const mult = ()=> 1 + Number(document.getElementById('boost').value); // 1x a 4x
 const vibe = (ms=30)=>{ if(document.getElementById('haptica')?.checked && navigator.vibrate){ navigator.vibrate(ms); } };
@@ -249,4 +267,5 @@ document.getElementById('btnTests')?.addEventListener('click', ()=>{ runTests();
 
 // Primer render
 window.addEventListener('DOMContentLoaded', ()=>{ generar(); });
+
 
